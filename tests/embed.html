@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PhotoBooth embed test</title>
+<link rel="stylesheet" href="../photobooth.css">
+<style>body { background: #eee; font: 14px sans-serif; } #booth { width: 560px; height: 600px; margin: 20px; }</style>
+</head>
+<body>
+<p>The app embedded in a 560 × 600 box, loaded from a subfolder.</p>
+<div id="booth" class="photobooth"></div>
+<script src="../flash.js"></script>
+<script src="../karthik.js"></script>
+<script src="../photobooth-screens.js"></script>
+<script src="../photobooth.js"></script>
+<script>photobooth.start(document.getElementById("booth"), { baseUrl: "../" });</script>
+</body>
+</html>

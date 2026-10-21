@@ -1,0 +1,94 @@
+// version 1
+kernel sepia
+//   meta namespace (string) = 'Karthik'
+//   meta vendor (string) = 'PhotoBooth'
+//   meta version (int) = [2]
+//   meta description (string) = 'Chroma key'
+param in float2 _OutCoord -> f0.rg
+param in float thresh -> f0.b
+//     param-meta minValue (float) = [0.0]
+//     param-meta maxValue (float) = [100.0]
+//     param-meta defaultValue (float) = [3.0]
+param in float weight_y -> f0.a
+//     param-meta minValue (float) = [0.0]
+//     param-meta maxValue (float) = [2.0]
+//     param-meta defaultValue (float) = [0.48]
+param in float weight_i -> f1.r
+//     param-meta minValue (float) = [0.0]
+//     param-meta maxValue (float) = [2.0]
+//     param-meta defaultValue (float) = [0.56]
+param in float weight_q -> f1.g
+//     param-meta minValue (float) = [0.0]
+//     param-meta maxValue (float) = [2.0]
+//     param-meta defaultValue (float) = [0.48]
+texture t0 src (channels=4)
+texture t1 bg (channels=4)
+param out float4 dst -> f2.rgba
+f3.r = 0.299
+f3.g = 0.596
+f3.b = 0.212
+f3.a = 0.0
+f4.r = 0.587
+f4.g = -0.275
+f4.b = -0.523
+f4.a = 0.0
+f5.r = 0.114
+f5.g = -0.321
+f5.b = 0.311
+f5.a = 0.0
+f6.r = 0.0
+f6.g = 0.0
+f6.b = 0.0
+f6.a = 1.0
+mov f1.ba, f0.rg
+f7 = sample_linear(t0, f1.ba)
+mov f8, f7
+mov f7, f8
+matvecmul f7, f3.r [matrix 3]
+mov f9, f7
+f7 = sample_linear(t1, f1.ba)
+mov f10, f7
+matvecmul f10, f3.r [matrix 3]
+mov f7, f10
+mov f10.r, f9.r
+sub f10.r, f7.r
+mov f10.g, f0.a
+mul f10.g, f10.r
+mov f10.r, f9.r
+sub f10.r, f7.r
+mov f10.b, f10.g
+mul f10.b, f10.r
+mov f10.r, f9.g
+sub f10.r, f7.g
+mov f10.g, f1.r
+mul f10.g, f10.r
+mov f10.r, f9.g
+sub f10.r, f7.g
+mov f10.a, f10.g
+mul f10.a, f10.r
+mov f10.r, f10.b
+add f10.r, f10.a
+mov f10.g, f9.b
+sub f10.g, f7.b
+mov f10.b, f1.g
+mul f10.b, f10.g
+mov f10.g, f9.b
+sub f10.g, f7.b
+mov f10.a, f10.b
+mul f10.a, f10.g
+mov f10.g, f10.r
+add f10.g, f10.a
+mov f10.r, f10.g
+f10.g = 1000.0
+rcp f10.b, f10.g
+mul f10.b, f0.b
+lt f10.b, f10.r
+mov i1.r, i0.r
+if (i1.r) {
+  mov f2, f8
+} else {
+  f2.r = 0.0
+  f2.g = 0.0
+  f2.b = 0.0
+  f2.a = 0.0
+}

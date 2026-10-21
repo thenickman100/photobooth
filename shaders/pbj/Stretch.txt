@@ -1,0 +1,103 @@
+// version 1
+kernel fisheye
+//   meta namespace (string) = 'com.karthik.photobooth'
+//   meta vendor (string) = 'Karthik Anand Jagadeesh'
+//   meta version (int) = [1]
+//   meta description (string) = 'Fish eye filter using cosine falloff function'
+param in float2 _OutCoord -> f0.rg
+param in float x -> f0.b
+//     param-meta minValue (float) = [0.0]
+//     param-meta maxValue (float) = [2048.0]
+//     param-meta defaultValue (float) = [320.0]
+//     param-meta description (string) = 'center point x'
+param in float y -> f0.a
+//     param-meta minValue (float) = [0.0]
+//     param-meta maxValue (float) = [2048.0]
+//     param-meta defaultValue (float) = [240.0]
+//     param-meta description (string) = 'center point y'
+param in float scale -> f1.r
+//     param-meta minValue (float) = [0.1]
+//     param-meta maxValue (float) = [1.0]
+//     param-meta defaultValue (float) = [0.67]
+//     param-meta description (string) = 'radius'
+param in float image_width -> f1.g
+//     param-meta minValue (float) = [0.0]
+//     param-meta maxValue (float) = [2048.0]
+//     param-meta defaultValue (float) = [640.0]
+param in float mag -> f1.b
+//     param-meta minValue (float) = [0.0]
+//     param-meta maxValue (float) = [200.0]
+//     param-meta defaultValue (float) = [120.0]
+texture t0 src (channels=4)
+param out float4 pxl -> f2.rgba
+mov f3.r, f0.b
+mov f3.g, f0.a
+mov f3.ba, f3.rg
+f1.a = 640.0
+rcp f3.r, f1.a
+mul f3.r, f1.g
+mov f1.a, f3.r
+mov f3.rg, f0.rg
+sub f3.rg, f3.ba
+mov f4.rg, f3.rg
+mov f3.r, f1.b
+mul f3.r, f1.a
+rcp f3.g, f3.r
+mul f3.g, f4.g
+mov f3.r, f3.g
+mov f3.g, f1.b
+mul f3.g, f1.a
+rcp f4.b, f3.g
+mul f4.b, f4.r
+mov f3.g, f4.b
+f4.b = -1.0
+mov f4.a, f4.b
+mul f4.a, f3.r
+mov f4.b, f4.a
+mul f4.b, f3.r
+exp f4.a, f4.b
+mov f4.b, f1.r
+mul f4.b, f4.a
+mov f4.a, f4.b
+f4.b = -1.0
+mov f5.r, f4.b
+mul f5.r, f3.g
+mov f4.b, f5.r
+mul f4.b, f3.g
+exp f5.r, f4.b
+mov f4.b, f1.r
+mul f4.b, f5.r
+mov f5.r, f4.b
+f4.b = 1.0
+mov f5.g, f4.b
+sub f5.g, f4.a
+mov f4.b, f5.g
+f5.g = 1.0
+mov f5.b, f5.g
+sub f5.b, f5.r
+mov f5.g, f5.b
+f5.b = 1.0
+mov f6.r, f5.b
+f5.b = 0.0
+mov f6.g, f5.b
+f5.b = 0.0
+mov f6.b, f5.b
+mov f6.a, f4.b
+mov f7, f6.r [matrix 1]
+mov f6.r, f5.g
+f5.b = 0.0
+mov f6.g, f5.b
+f5.b = 0.0
+mov f6.b, f5.b
+f5.b = 1.0
+mov f6.a, f5.b
+mov f8, f6.r [matrix 1]
+mov f6, f7.r [matrix 1]
+matmatmul f6, f8.r [matrix 1]
+mov f5.ba, f4.rg
+matvecmul f5.ba, f6.r [matrix 1]
+mov f6.rg, f5.ba
+add f6.rg, f3.ba
+mov f5.ba, f6.rg
+f6 = sample_linear(t0, f5.ba)
+mov f2, f6

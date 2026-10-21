@@ -1,0 +1,4 @@
+tests/out/
+tools/.ffdec/
+extracted/
+node_modules/

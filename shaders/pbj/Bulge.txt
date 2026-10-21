@@ -1,0 +1,71 @@
+// version 1
+kernel fisheye
+//   meta namespace (string) = 'com.karthik.photobooth'
+//   meta vendor (string) = 'Karthik Anand Jagadeesh'
+//   meta version (int) = [1]
+//   meta description (string) = 'Fish eye filter using cosine falloff function'
+param in float2 _OutCoord -> f0.rg
+param in float x -> f0.b
+//     param-meta minValue (float) = [0.0]
+//     param-meta maxValue (float) = [2048.0]
+//     param-meta defaultValue (float) = [320.0]
+//     param-meta description (string) = 'center point x'
+param in float y -> f0.a
+//     param-meta minValue (float) = [0.0]
+//     param-meta maxValue (float) = [2048.0]
+//     param-meta defaultValue (float) = [240.0]
+//     param-meta description (string) = 'center point y'
+param in float image_width -> f1.r
+//     param-meta minValue (float) = [0.0]
+//     param-meta maxValue (float) = [2048.0]
+//     param-meta defaultValue (float) = [640.0]
+param in float magnitude -> f1.g
+//     param-meta minValue (float) = [0.0]
+//     param-meta maxValue (float) = [1.0]
+//     param-meta defaultValue (float) = [0.5]
+texture t0 src (channels=4)
+param out float4 pxl -> f2.rgba
+mov f1.b, f0.b
+mov f1.a, f0.a
+mov f3.rg, f1.ba
+f1.b = 640.0
+rcp f1.a, f1.b
+mul f1.a, f1.r
+mov f1.b, f1.a
+mov f3.ba, f0.rg
+sub f3.ba, f3.rg
+mov f4.rg, f3.ba
+f1.a = 130.0
+mov f3.b, f1.g
+mul f3.b, f1.a
+mov f1.a, f3.b
+length f3.b, f4.rg
+rcp f3.a, f1.a
+mul f3.a, f3.b
+mov f3.b, f3.a
+f3.a = -1.0
+abs f4.b, f3.b
+mov f4.a, f3.a
+mul f4.a, f4.b
+exp f3.a, f4.a
+mov f4.b, f3.a
+f3.a = 1.0
+mov f4.a, f1.g
+mul f4.a, f4.b
+mov f5.r, f3.a
+sub f5.r, f4.a
+mov f3.a, f5.r
+mov f5.r, f3.a
+f4.a = 0.0
+mov f5.g, f4.a
+f4.a = 0.0
+mov f5.b, f4.a
+mov f5.a, f3.a
+mov f6, f5.r [matrix 1]
+mov f5.rg, f4.rg
+matvecmul f5.rg, f6.r [matrix 1]
+mov f5.ba, f5.rg
+add f5.ba, f3.rg
+mov f5.rg, f5.ba
+f7 = sample_linear(t0, f5.rg)
+mov f2, f7

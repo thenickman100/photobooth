@@ -1,0 +1,135 @@
+// version 1
+kernel twirl
+//   meta namespace (string) = 'PhotoBooth'
+//   meta vendor (string) = 'Karthik'
+//   meta version (int) = [1]
+//   meta description (string) = 'photobooth twist filter'
+param in float2 _OutCoord -> f0.rg
+param in float x -> f0.b
+//     param-meta minValue (float) = [0.0]
+//     param-meta maxValue (float) = [2880.0]
+//     param-meta defaultValue (float) = [320.0]
+param in float y -> f0.a
+//     param-meta minValue (float) = [0.0]
+//     param-meta maxValue (float) = [2880.0]
+//     param-meta defaultValue (float) = [240.0]
+param in float magnitude -> f1.r
+//     param-meta minValue (float) = [0.0]
+//     param-meta maxValue (float) = [1.0]
+//     param-meta defaultValue (float) = [0.5]
+param in float image_width -> f1.g
+//     param-meta minValue (float) = [0.0]
+//     param-meta maxValue (float) = [2800.0]
+//     param-meta defaultValue (float) = [640.0]
+param in float image_height -> f1.b
+//     param-meta minValue (float) = [0.0]
+//     param-meta maxValue (float) = [2800.0]
+//     param-meta defaultValue (float) = [480.0]
+param in float max_angle -> f1.a
+//     param-meta minValue (float) = [0.0]
+//     param-meta maxValue (float) = [360.0]
+//     param-meta defaultValue (float) = [200.0]
+texture t0 source (channels=4)
+param out float4 dst -> f2.rgba
+mov f3.r, f1.b
+f3.g = 0.5
+mov f3.b, f3.g
+mul f3.b, f3.r
+mov f3.g, f3.b
+mul f3.g, f1.r
+mov f3.b, f3.g
+mov f3.g, f1.a
+mul f3.g, f1.r
+mov f3.a, f3.g
+mov f4.r, f0.b
+mov f4.g, f0.a
+mov f4.ba, f4.rg
+f3.g = 0.0174533
+mul f3.g, f3.a
+mov f4.r, f3.g
+mov f5.rg, f0.rg
+sub f5.rg, f4.ba
+mov f5.ba, f5.rg
+length f3.g, f5.ba
+rcp f4.g, f3.b
+mul f4.g, f3.g
+mov f3.g, f4.g
+f4.g = -1.0
+mov f5.r, f4.g
+mul f5.r, f3.g
+mov f4.g, f5.r
+mul f4.g, f3.g
+exp f5.r, f4.g
+mov f4.g, f5.r
+mov f5.r, f4.g
+mul f5.r, f4.r
+mov f5.g, f5.r
+cos f5.r, f5.g
+mov f6.r, f5.r
+sin f5.r, f5.g
+mov f6.g, f5.r
+mov f7.r, f6.r
+mov f7.g, f6.g
+f5.r = 0.0
+sub f5.r, f6.g
+mov f7.b, f5.r
+mov f7.a, f6.r
+mov f8, f7.r [matrix 1]
+mov f6.ba, f5.ba
+matvecmul f6.ba, f8.r [matrix 1]
+mov f7.rg, f6.ba
+mov f6.ba, f4.ba
+add f6.ba, f7.rg
+mov f7.ba, f6.ba
+f5.r = 1.0
+lt f7.b, f5.r
+mov i1.r, i0.r
+if (i1.r) {
+  f5.r = 1.0
+  mov f6.b, f5.r
+  sub f6.b, f7.b
+  mov f7.b, f6.b
+}
+f5.r = 1.0
+lt f7.a, f5.r
+mov i1.r, i0.r
+if (i1.r) {
+  f5.r = 1.0
+  mov f6.b, f5.r
+  sub f6.b, f7.a
+  mov f7.a, f6.b
+}
+f5.r = 1.0
+mov f6.b, f1.g
+sub f6.b, f5.r
+lt f6.b, f7.b
+mov i1.r, i0.r
+if (i1.r) {
+  f5.r = 2.0
+  mov f6.b, f5.r
+  mul f6.b, f1.g
+  mov f5.r, f6.b
+  sub f5.r, f7.b
+  f6.b = 2.0
+  mov f6.a, f5.r
+  sub f6.a, f6.b
+  mov f7.b, f6.a
+}
+f5.r = 1.0
+mov f6.b, f1.b
+sub f6.b, f5.r
+lt f6.b, f7.a
+mov i1.r, i0.r
+if (i1.r) {
+  f5.r = 2.0
+  mov f6.b, f5.r
+  mul f6.b, f1.b
+  mov f5.r, f6.b
+  sub f5.r, f7.a
+  f6.b = 2.0
+  mov f6.a, f5.r
+  sub f6.a, f6.b
+  mov f7.a, f6.a
+}
+f9 = sample_linear(t0, f7.ba)
+mov f2, f9

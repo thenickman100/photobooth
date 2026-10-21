@@ -1,0 +1,28 @@
+/* PhotoBooth for Windows (HTML5 port). The stage fills its container. */
+
+@font-face {
+   /* The Lucida Grande subset embedded in the original SWF (Basic Latin). */
+   font-family: "Lucida Grande";
+   src: local("Lucida Grande"), url("assets/LucidaGrande.ttf") format("truetype");
+   font-weight: normal;
+   font-style: normal;
+}
+
+.photobooth {
+   position: relative;
+   width: 100%;
+   height: 100%;
+   overflow: hidden;
+   /* Shown while the camera permission prompt is open. */
+   background: #2a5a9a url("assets/AppSkin_Bmp.jpg") center / 100% 100% no-repeat;
+}
+
+.photobooth-stage {
+   display: block;
+   position: absolute;
+   left: 0;
+   top: 0;
+   user-select: none;
+   -webkit-user-select: none;
+   -webkit-tap-highlight-color: transparent;
+}

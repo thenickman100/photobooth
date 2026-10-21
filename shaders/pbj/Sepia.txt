@@ -1,0 +1,51 @@
+// version 1
+kernel sepia
+//   meta namespace (string) = 'Karthik'
+//   meta vendor (string) = 'PhotoBooth'
+//   meta version (int) = [2]
+//   meta description (string) = 'Sepia Filter'
+param in float2 _OutCoord -> f0.rg
+texture t0 src (channels=4)
+param out float4 dst -> f1.rgba
+f2.r = 0.299
+f2.g = 0.596
+f2.b = 0.212
+f2.a = 0.0
+f3.r = 0.587
+f3.g = -0.275
+f3.b = -0.523
+f3.a = 0.0
+f4.r = 0.114
+f4.g = -0.321
+f4.b = 0.311
+f4.a = 0.0
+f5.r = 0.0
+f5.g = 0.0
+f5.b = 0.0
+f5.a = 1.0
+f6.r = 1.0
+f6.g = 1.0
+f6.b = 1.0
+f6.a = 0.0
+f7.r = 0.956
+f7.g = -0.272
+f7.b = -1.1
+f7.a = 0.0
+f8.r = 0.621
+f8.g = -0.647
+f8.b = 1.7
+f8.a = 0.0
+f9.r = 0.0
+f9.g = 0.0
+f9.b = 0.0
+f9.a = 1.0
+f10 = sample_nearest(t0, f0.rg)
+mov f11, f10
+mov f10, f11
+matvecmul f10, f2.r [matrix 3]
+mov f12, f10
+f12.g = 0.16
+f12.b = 0.0
+mov f10, f12
+matvecmul f10, f6.r [matrix 3]
+mov f1, f10

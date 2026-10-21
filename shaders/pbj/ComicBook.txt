@@ -1,0 +1,171 @@
+// version 1
+kernel HalfToneFilter
+//   meta namespace (string) = 'Karthik filters'
+//   meta vendor (string) = 'huangnankun@gmail.com'
+//   meta version (int) = [1]
+//   meta description (string) = 'torus lense'
+param in float2 _OutCoord -> f0.rg
+param in float dot_spacing -> f0.b
+//     param-meta minValue (float) = [5.0]
+//     param-meta maxValue (float) = [40.0]
+//     param-meta defaultValue (float) = [12.0]
+//     param-meta description (string) = 'Spacing between the dots for the grid'
+param in float max_dot_size -> f0.a
+//     param-meta minValue (float) = [3.0]
+//     param-meta maxValue (float) = [20.0]
+//     param-meta defaultValue (float) = [10.0]
+//     param-meta description (string) = 'maximum size of the dots used to halftone'
+param in float gamma -> f1.r
+//     param-meta minValue (float) = [0.5]
+//     param-meta maxValue (float) = [5.0]
+//     param-meta defaultValue (float) = [0.8]
+//     param-meta description (string) = 'angle you wish to place the halftone screen'
+texture t0 source (channels=4)
+param out float4 result -> f2.rgba
+mov f1.gb, f0.rg
+f3 = sample_linear(t0, f1.gb)
+mov f4, f3
+mul f4, f1.rrrr
+f3.r = 0.0
+f3.g = 0.0
+f3.b = 0.0
+f3.a = 1.0
+mov f5.r, f0.b
+mov f5.g, f0.b
+mov f5.ba, f5.rg
+f6.r = 0.258819
+f6.g = -0.9659258
+f6.b = 0.9659258
+f6.a = 0.258819
+mov f5.rg, f1.gb
+matvecmul f5.rg, f6.r [matrix 1]
+mov f6.rg, f5.rg
+rcp f5.rg, f5.ba
+mul f5.rg, f6.rg
+f1.a = 0.5
+mov f6.ba, f5.rg
+add f6.ba, f1.aa
+floor f5.rg, f6.ba
+mov f6.ba, f5.rg
+mov f5.rg, f6.ba
+mul f5.rg, f5.ba
+mov f7.rg, f5.rg
+mov f5.rg, f6.rg
+sub f5.rg, f7.rg
+length f1.a, f5.rg
+mov f5.r, f1.a
+f1.a = 1.0
+mov f5.g, f4.r
+mul f5.g, f1.a
+mov f7.b, f5.g
+mov f5.g, f7.b
+mul f5.g, f0.a
+f7.a = 0.5
+mov f8.r, f5.g
+add f8.r, f7.a
+floor f5.g, f8.r
+mov f7.a, f5.g
+lt f5.r, f7.a
+mov i1.r, i0.r
+if (i1.r) {
+  f5.g = 1.0
+  add f3.r, f5.g
+  f5.g = 1.0
+  lt f5.g, f3.r
+  mov i1.g, i0.r
+  f5.g = 1.0
+  f8.r = i1.g ? f5.g : f3.r
+  mov f3.r, f8.r
+}
+f8.r = -0.258819
+f8.g = -0.9659258
+f8.b = 0.9659258
+f8.a = -0.258819
+mov f9.rg, f1.gb
+matvecmul f9.rg, f8.r [matrix 1]
+mov f8.rg, f9.rg
+rcp f8.ba, f5.ba
+mul f8.ba, f8.rg
+f5.g = 0.5
+mov f9.rg, f8.ba
+add f9.rg, f5.gg
+floor f8.ba, f9.rg
+mov f9.rg, f8.ba
+mov f8.ba, f9.rg
+mul f8.ba, f5.ba
+mov f9.ba, f8.ba
+mov f8.ba, f8.rg
+sub f8.ba, f9.ba
+length f5.g, f8.ba
+mov f8.b, f5.g
+f5.g = 0.9
+mov f8.a, f4.b
+mul f8.a, f5.g
+mov f10.r, f8.a
+mov f8.a, f10.r
+mul f8.a, f0.a
+f10.g = 0.5
+mov f10.b, f8.a
+add f10.b, f10.g
+floor f8.a, f10.b
+mov f10.g, f8.a
+lt f8.b, f10.g
+mov i1.r, i0.r
+if (i1.r) {
+  f8.a = 1.0
+  add f3.b, f8.a
+  f8.a = 1.0
+  lt f8.a, f3.b
+  mov i1.g, i0.r
+  f8.a = 1.0
+  f10.b = i1.g ? f8.a : f3.b
+  mov f3.b, f10.b
+}
+mov f10.b, f0.b
+mov f10.a, f0.b
+mov f11.rg, f10.ba
+f12.r = 0.0
+f12.g = -1.0
+f12.b = 1.0
+f12.a = 0.0
+mov f10.ba, f1.gb
+matvecmul f10.ba, f12.r [matrix 1]
+mov f11.ba, f10.ba
+rcp f10.ba, f11.rg
+mul f10.ba, f11.ba
+f8.a = 0.5
+mov f12.rg, f10.ba
+add f12.rg, f8.aa
+floor f10.ba, f12.rg
+mov f12.rg, f10.ba
+mov f10.ba, f12.rg
+mul f10.ba, f11.rg
+mov f12.ba, f10.ba
+mov f10.ba, f11.ba
+sub f10.ba, f12.ba
+length f8.a, f10.ba
+mov f10.b, f8.a
+f8.a = 0.8
+mov f10.a, f4.g
+mul f10.a, f8.a
+mov f13.r, f10.a
+mov f10.a, f13.r
+mul f10.a, f0.a
+f13.g = 0.5
+mov f13.b, f10.a
+add f13.b, f13.g
+floor f10.a, f13.b
+mov f13.g, f10.a
+lt f10.b, f13.g
+mov i1.r, i0.r
+if (i1.r) {
+  f10.a = 1.0
+  add f3.g, f10.a
+  f10.a = 1.0
+  lt f10.a, f3.g
+  mov i1.g, i0.r
+  f10.a = 1.0
+  f13.b = i1.g ? f10.a : f3.g
+  mov f3.g, f13.b
+}
+mov f2, f3

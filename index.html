@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PhotoBooth for Windows</title>
+<link rel="stylesheet" href="photobooth.css">
+<style>html, body { margin: 0; height: 100%; background: #2a5a9a; }</style>
+</head>
+<body>
+<!--
+  PhotoBooth for Windows by Karthik Tharavaad (http://tharavaad.wordpress.com/),
+  rebuilt in HTML5 from the original Flash app. To embed it, give a container
+  element a size and call photobooth.start(element). Everything runs in the
+  browser; no photo leaves the page.
+-->
+<div id="photobooth" class="photobooth"></div>
+<script src="flash.js"></script>
+<script src="karthik.js"></script>
+<script src="photobooth-screens.js"></script>
+<script src="photobooth.js"></script>
+<script>
+photobooth.start(document.getElementById("photobooth")).catch(function (err) {
+   console.error(err);
+});
+</script>
+</body>
+</html>

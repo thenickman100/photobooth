@@ -1,0 +1,161 @@
+// version 1
+kernel fisheye
+//   meta namespace (string) = 'com.karthik.photobooth'
+//   meta vendor (string) = 'Karthik Anand Jagadeesh'
+//   meta version (int) = [1]
+//   meta description (string) = 'Dent filter'
+param in float2 _OutCoord -> f0.rg
+param in float x -> f0.b
+//     param-meta minValue (float) = [0.0]
+//     param-meta maxValue (float) = [2048.0]
+//     param-meta defaultValue (float) = [320.0]
+//     param-meta description (string) = 'center point x'
+param in float y -> f0.a
+//     param-meta minValue (float) = [0.0]
+//     param-meta maxValue (float) = [2048.0]
+//     param-meta defaultValue (float) = [240.0]
+//     param-meta description (string) = 'center point y'
+param in float image_width -> f1.r
+//     param-meta minValue (float) = [0.0]
+//     param-meta maxValue (float) = [2048.0]
+//     param-meta defaultValue (float) = [640.0]
+param in float image_height -> f1.g
+//     param-meta minValue (float) = [0.0]
+//     param-meta maxValue (float) = [2048.0]
+//     param-meta defaultValue (float) = [480.0]
+param in float magnitude -> f1.b
+//     param-meta minValue (float) = [0.0]
+//     param-meta maxValue (float) = [1.0]
+//     param-meta defaultValue (float) = [0.5]
+texture t0 src (channels=4)
+param out float4 pxl -> f2.rgba
+mov f3.r, f0.b
+mov f3.g, f0.a
+mov f3.ba, f3.rg
+f1.a = 1.0
+mov f3.rg, f0.rg
+sub f3.rg, f3.ba
+mov f4.rg, f3.rg
+length f3.r, f4.rg
+mov f3.g, f3.r
+mov f3.r, f1.b
+mul f3.r, f1.a
+mov f4.b, f3.r
+f3.r = 1.0
+f4.a = 0.8
+mov f5.r, f4.b
+mul f5.r, f4.a
+mov f4.a, f3.r
+add f4.a, f5.r
+mov f3.r, f4.a
+mov f4.a, f4.b
+mul f4.a, f1.r
+f5.r = 2.0
+rcp f5.g, f5.r
+mul f5.g, f4.a
+mov f4.a, f5.g
+mov f5.r, f4.b
+mul f5.r, f1.r
+f5.g = 0.2
+mov f5.b, f5.r
+mul f5.b, f5.g
+f5.r = 2.0
+rcp f5.g, f5.r
+mul f5.g, f5.b
+mov f5.r, f5.g
+lt f3.g, f5.r
+mov i1.r, i0.r
+if (i1.r) {
+} else {
+  lt f4.a, f3.g
+  mov i1.g, i0.r
+  if (i1.g) {
+    f3.r = 1.0
+  } else {
+    mov f5.g, f3.g
+    sub f5.g, f5.r
+    mov f5.b, f4.a
+    sub f5.b, f5.r
+    rcp f5.a, f5.b
+    mul f5.a, f5.g
+    mov f5.g, f5.a
+    f5.b = 3.1415927
+    mov f5.a, f5.g
+    mul f5.a, f5.b
+    cos f5.b, f5.a
+    f5.a = 0.0
+    sub f5.a, f5.b
+    f5.b = 1.0
+    mov f6.r, f5.a
+    add f6.r, f5.b
+    f5.b = 2.0
+    rcp f5.a, f5.b
+    mul f5.a, f6.r
+    mov f5.b, f5.a
+    f5.a = 1.0
+    mov f6.r, f3.r
+    sub f6.r, f5.a
+    mov f5.a, f5.b
+    mul f5.a, f6.r
+    mov f6.r, f3.r
+    sub f6.r, f5.a
+    mov f3.r, f6.r
+  }
+}
+mov f6.rg, f3.rr
+mul f6.rg, f4.rg
+mov f6.ba, f3.ba
+add f6.ba, f6.rg
+mov f6.rg, f6.ba
+f5.a = 1.0
+lt f6.r, f5.a
+mov i1.r, i0.r
+if (i1.r) {
+  f5.a = 1.0
+  mov f6.b, f5.a
+  sub f6.b, f6.r
+  mov f6.r, f6.b
+}
+f5.a = 1.0
+lt f6.g, f5.a
+mov i1.r, i0.r
+if (i1.r) {
+  f5.a = 1.0
+  mov f6.b, f5.a
+  sub f6.b, f6.g
+  mov f6.g, f6.b
+}
+f5.a = 1.0
+mov f6.b, f1.r
+sub f6.b, f5.a
+lt f6.b, f6.r
+mov i1.r, i0.r
+if (i1.r) {
+  f5.a = 2.0
+  mov f6.b, f5.a
+  mul f6.b, f1.r
+  mov f5.a, f6.b
+  sub f5.a, f6.r
+  f6.b = 2.0
+  mov f6.a, f5.a
+  sub f6.a, f6.b
+  mov f6.r, f6.a
+}
+f5.a = 1.0
+mov f6.b, f1.g
+sub f6.b, f5.a
+lt f6.b, f6.g
+mov i1.r, i0.r
+if (i1.r) {
+  f5.a = 2.0
+  mov f6.b, f5.a
+  mul f6.b, f1.g
+  mov f5.a, f6.b
+  sub f5.a, f6.g
+  f6.b = 2.0
+  mov f6.a, f5.a
+  sub f6.a, f6.b
+  mov f6.g, f6.a
+}
+f7 = sample_nearest(t0, f6.rg)
+mov f2, f7
