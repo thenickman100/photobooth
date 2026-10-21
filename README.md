@@ -8,6 +8,9 @@ viewer, download flow and messages.
 
 Everything stays in the browser. No photo is uploaded anywhere.
 
+**Try it:** https://thenickman100.github.io/photobooth/ (served by GitHub Pages from the
+`gh-pages` branch; to update it, push `main` to `gh-pages`).
+
 ## Running it
 
 Serve the folder from any static host. The camera needs HTTPS or
